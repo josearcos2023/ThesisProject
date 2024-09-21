@@ -1,0 +1,76 @@
+name: Build, Test, and Deploy
+
+on:
+  push:
+    branches: "main"
+  pull_request:
+    branches: "main"
+
+jobs:
+  eslint:
+    name: Check Syntax with ESLint
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Use Node.js ${{ matrix.node-version }} to Check Lint
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Run ESLint
+        run: npm run lint
+
+  tests:
+    name: Run Tests
+    needs: eslint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Use Node.js 18.x to run Test
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+          
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Run Tests
+        run: npm run test
+
+  deploy:
+    name: Re-Deploy Application
+    needs: [eslint, tests]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Kinsta
+        env:
+          KINSTA_API_KEY: ${{ secrets.KINSTA_API_KEY }}
+          APP_ID: ${{ secrets.APP_ID }}
+        run: |
+          curl -i -X POST \
+            https://api.kinsta.com/v2/applications/deployments \
+            -H "Authorization: Bearer $KINSTA_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "app_id": "'"$APP_ID"'",
+              "branch": "main"
+            }'
+
+
+# Add more jobs if needed...
