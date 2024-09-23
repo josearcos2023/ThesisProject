@@ -10,14 +10,115 @@ body {
   font-family: 'Poppins', sans-serif;
   background: #1D1E20;
   color: #DADADB;
-  max-width: 800px;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
 }
 
+
+/*Side bar*/
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 15%; /* Ocupa 1/4 del ancho */
+  background-color: #2c2c2c;
+  color: white;
+  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0 20px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: flex-start;
+}
+
+.sidebar li {
+  margin: 20px 0;
+  cursor: pointer;
+}
+
+.sidebar li:hover {
+  text-decoration: underline;
+}
+
+/* Nuevo Chat como botón */
+.new-chat-btn {
+  background-color: #CA228C;
+  color: white;
+  border: none;
+  margin-left: 20px;
+  padding: 10px 15px; /* Ajuste de padding */
+  font-size: 1rem; /* Tamaño de texto ajustado */
+  border-radius: 8px; /* Borde más redondeado */
+  cursor: pointer;
+  margin-bottom: 20px;
+  width: 150px;
+  transition: background-color 0.3s ease;
+}
+
+.new-chat-btn:hover {
+  background-color: #D847A8;
+}
+
+/* Mi cuenta */
+.account-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 20px 0;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  background-color: #1D1E20;
+}
+
+/* Cerrar Sesión */
+.logout {
+  background-color: #CA228C;
+  padding: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout:hover {
+  background-color: #D847A8;
+}
+
+/* Contenido principal */
+.main-content {
+  width: 85%;
+  padding: 20px;
+}
+/* Fin Side bar*/
+
+
+/* Responsive */
 @media screen and (max-width: 800px) {
   body {
     max-width: 100%;
     padding: 0 20px;
+  }
+
+  .account-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #1D1E20;
   }
 }
 
@@ -41,10 +142,16 @@ body {
   margin: 30px 0;
 }
 
-textarea,
+textarea{
+  min-height: 300px;
+  min-width: 80%;
+  margin: 10px 0;
+  resize: none;
+}
 button {
-  width: 100%;
+  width: 50%;
   border-radius: 5px;
+  padding: 10px;
   border: none;
 }
 
