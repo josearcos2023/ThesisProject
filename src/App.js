@@ -2,7 +2,7 @@ import { Configuration, OpenAIApi } from 'openai';
 
 import FormSection from './components/FormSection';
 import AnswerSection from './components/AnswerSection';
-import Sidebar from './components/Sidebar'; // Importamos Sidebar
+import Sidebar from './components/Sidebar';
 import { useState } from 'react';
 import './index.css';
 
