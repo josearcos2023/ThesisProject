@@ -53,7 +53,6 @@ body {
 
 /* Nuevo Chat como botón */
 .new-chat-btn {
-  background-color: #CA228C;
   color: white;
   border: none;
   margin-left: 20px;
@@ -67,11 +66,11 @@ body {
 }
 
 .new-chat-btn:hover {
-  background-color: #D847A8;
+  background-color: #33c9dc;
 }
 
 /* Mi cuenta */
-.account-section {
+/* .account-sexion {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -79,11 +78,10 @@ body {
   margin-bottom: 20px;
   font-size: 1.1rem;
   background-color: #1D1E20;
-}
+} */
 
 /* Cerrar Sesión */
 .logout {
-  background-color: #CA228C;
   padding: 5px;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -95,7 +93,7 @@ body {
 }
 
 .logout:hover {
-  background-color: #D847A8;
+  background-color: #33c9dc;
 }
 
 /* Contenido principal */
@@ -113,13 +111,13 @@ body {
     padding: 0 20px;
   }
 
-  .account-section {
+  /* .account-section {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     background-color: #1D1E20;
-  }
+  } */
 }
 
 .header-section {
