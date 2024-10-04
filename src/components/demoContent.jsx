@@ -21,5 +21,5 @@ const DemoContent = ({ generateResponse, question }) => {
         </div>
     )
 }
-
+// Comentario prueba
 export default DemoContent
