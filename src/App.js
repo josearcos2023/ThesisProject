@@ -17,7 +17,7 @@ const App = () => {
 
 	const generateResponse = async (newQuestion, setNewQuestion) => {
 		let options = {
-			model: 'text-davinci-003',
+			model: 'gpt-4o-mini',
 			temperature: 0,
 			max_tokens: 100,
 			top_p: 1,
