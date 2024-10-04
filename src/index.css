@@ -53,7 +53,6 @@ body {
 
 /* Nuevo Chat como botón */
 .new-chat-btn {
-  background-color: #CA228C;
   color: white;
   border: none;
   margin-left: 20px;
@@ -67,11 +66,11 @@ body {
 }
 
 .new-chat-btn:hover {
-  background-color: #D847A8;
+  background-color: #33c9dc;
 }
 
 /* Mi cuenta */
-.account-section {
+/* .account-sexion {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -79,11 +78,10 @@ body {
   margin-bottom: 20px;
   font-size: 1.1rem;
   background-color: #1D1E20;
-}
+} */
 
 /* Cerrar Sesión */
 .logout {
-  background-color: #CA228C;
   padding: 5px;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -95,7 +93,7 @@ body {
 }
 
 .logout:hover {
-  background-color: #D847A8;
+  background-color: #33c9dc;
 }
 
 /* Contenido principal */
@@ -113,13 +111,13 @@ body {
     padding: 0 20px;
   }
 
-  .account-section {
+  /* .account-section {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     background-color: #1D1E20;
-  }
+  } */
 }
 
 .header-section {
@@ -140,16 +138,19 @@ body {
 
 .form-section {
   margin: 30px 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 textarea{
-  min-height: 300px;
+  min-height: 50px;
   min-width: 80%;
   margin: 10px 0;
   resize: none;
 }
 button {
-  width: 50%;
+  width: 80%;
   border-radius: 5px;
   padding: 10px;
   border: none;
@@ -168,8 +169,10 @@ button {
 }
 
 .form-control:focus {
-  border-left: 5px solid #CA228C;
-  border-top: 5px solid #CA228C;
+  border-left: 2px solid #5ba5ff;
+  border-top: 2px solid #5ba5ff;
+  border-right: 2px solid #5ba5ff;
+  border-bottom: 2px solid #5ba5ff;
   border-top-left-radius: 0%;
   border-bottom-left-radius: 0%;
   border-top-right-radius: 0%;
@@ -185,12 +188,48 @@ button {
   transition: all 0.5s ease-in-out;
 }
 
+.btn-demo-content {
+  background: #000000;
+  color: #DADADB;
+  padding: 10px 0;
+  font-size: 1rem;
+  font-weight: 200;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+  flex: 1;
+  max-width: 300px;
+  height: 100px;
+  /* justify-content: center; */
+  /* text-align: center; */
+}
+
 .btn:hover {
-  border-left: 5px solid #CA228C;
-  border-top: 5px solid #CA228C;
+  border-left: 2px solid #5ba5ff;
+  border-top: 2px solid #5ba5ff;
+  border-right: 2px solid #5ba5ff;
+  border-bottom: 2px solid #5ba5ff;
   border-top-left-radius: 0%;
   border-bottom-left-radius: 0%;
   border-top-right-radius: 0%;
+  
+}
+
+.btn-demo-content:hover {
+  border-left: 2px solid #5ba5ff;
+  border-top: 2px solid #5ba5ff;
+  border-right: 2px solid #5ba5ff;
+  border-bottom: 2px solid #5ba5ff;
+  border-top-left-radius: 0%;
+  border-bottom-left-radius: 0%;
+  border-top-right-radius: 0%;
+}
+
+.demo-content-buttons{
+  align-items: center;
+  display: flex;
+  gap: 5px; 
+  margin-bottom: 10px;
+  
 }
 
 .hr-line {
