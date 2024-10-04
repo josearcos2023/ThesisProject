@@ -10,15 +10,13 @@ const DemoContent = ({ generateResponse, question }) => {
 
     return (
         
-        <div>
             <button 
                 className='btn-demo-content'
                 onClick={handleButtonClick}
             >
                 {question}
             </button>
-            
-        </div>
+
     )
 }
 // Comentario prueba

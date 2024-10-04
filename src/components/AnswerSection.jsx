@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AnswerSection = ({ storedValues }) => {
+const AnswerSection = ({ storedValues, formatExamText }) => {
     const copyText = (text) => {
         navigator.clipboard.writeText(text);
     };
@@ -20,7 +20,7 @@ const AnswerSection = ({ storedValues }) => {
                     return (
                         <div className="answer-section" key={index}>
                             <p className="question">{value.question}</p>
-                            <p className="answer">{value.answer}</p>
+                            <p className="answer">{formatExamText(value.answer)}</p>
                             <div
                                 className="copy-icon"
                                 onClick={() => copyText(value.answer)}

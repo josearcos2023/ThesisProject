@@ -7,9 +7,9 @@ const FormSection = ({ generateResponse }) => {
     return (
         <div className="form-section">
             <div className='demo-content-buttons'>
-                <DemoContent question={"Crea un examen de opción múltiple acerca de Procedimientos Almacenados"} generateResponse={generateResponse}/>
-                <DemoContent question={"Crea un examen de opción múltiple acerca de ADO.NET"} generateResponse={generateResponse}/>
-                <DemoContent question={"Crea un examen de opción múltiple acerca de Bubble Sort en Python"} generateResponse={generateResponse}/>
+                <div className='demo-content-single-button'><DemoContent question={"Crea un examen de opción múltiple acerca de Procedimientos Almacenados"} generateResponse={generateResponse}/></div>
+                <div className='demo-content-single-button'><DemoContent question={"Crea un examen de opción múltiple acerca de ADO.NET"} generateResponse={generateResponse}/></div>
+                <div className='demo-content-single-button'><DemoContent question={"Crea un examen de opción múltiple acerca de Bubble Sort en Python"} generateResponse={generateResponse}/></div>
             </div>
             <textarea
                 rows="5"
