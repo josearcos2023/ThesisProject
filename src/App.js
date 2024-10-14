@@ -1,3 +1,4 @@
+//Version anterior de App.js:
 // import { Configuration, OpenAIApi } from 'openai';
 
 // import FormSection from './components/FormSection';
@@ -102,10 +103,10 @@
 
 // export default App;
 
-//TEST//
+
+//Respuesta en form para back//
 import React, { useState } from 'react';
 import axios from 'axios';
-// import { Configuration, OpenAIApi } from 'openai';
 import FormSection from './components/FormSection';
 import AnswerSection from './components/AnswerSection';
 import Sidebar from './components/Sidebar';
@@ -113,21 +114,16 @@ import './index.css';
 
 const App = () => {
   const [storedValues, setStoredValues] = useState([]);
-
-  // const configuration = new Configuration({
-  //   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-  // });
-
-  // const openai = new OpenAIApi(configuration);
+  const [editableQuestions, setEditableQuestions] = useState([]);
 
   const generateResponse = async (newQuestion, setNewQuestion) => {
     console.log('Sending request with question:', newQuestion);
     try {
-      // Primero intentamos usar el backend Flask
-      const response = await axios.post('/generate_exam', { prompt: newQuestion });
+      const response = await axios.post('http://127.0.0.1:5000/generate_exam', { prompt: newQuestion });
       const questions = response.data;
 
       console.log('Response received:', questions);
+      setEditableQuestions(questions);
       setStoredValues([
         {
           question: newQuestion,
@@ -138,65 +134,75 @@ const App = () => {
       setNewQuestion('');
     } catch (error) {
       console.error('Error generating exam with Flask backend:', error);
-      // Mostrar un mensaje de error al usuario
-      alert('There was an error generating the exam. Please, try again.');
+      alert('There was an error generating the exam. Please try again.');
+    }
+  };
 
-      // Si falla, usamos OpenAI directamente como fallback
-      // try {
-      //   const openaiResponse = await openai.createChatCompletion({
-      //     model: 'gpt-4o-mini',
-      //     messages: [
-      //       { role: 'system', content: 'You are a helpful assistant.' },
-      //       { role: 'user', content: newQuestion },
-      //     ],
-      //     temperature: 0,
-      //     max_tokens: 400,
-      //     top_p: 1,
-      //     frequency_penalty: 0.0,
-      //     presence_penalty: 0.0,
-      //   });
+  const handleQuestionEdit = (index, field, value) => {
+    const updatedQuestions = [...editableQuestions];
+    updatedQuestions[index][field] = value;
+    setEditableQuestions(updatedQuestions);
+  };
 
-      //   if (openaiResponse.data.choices) {
-      //     setStoredValues([
-      //       {
-      //         question: newQuestion,
-      //         answer: openaiResponse.data.choices[0].message.content,
-      //       },
-      //       ...storedValues,
-      //     ]);
-      //     setNewQuestion('');
-      //   }
-      // } catch (openaiError) {
-      //   console.error('Error generating response with OpenAI:', openaiError);
-      //   // Manejar el error apropiadamente (e.g., mostrar un mensaje al usuario)
-      // }
+  const handleAnswerEdit = (questionIndex, answerIndex, field, value) => {
+    const updatedQuestions = [...editableQuestions];
+    updatedQuestions[questionIndex].answers[answerIndex][field] = value;
+    setEditableQuestions(updatedQuestions);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/create_quiz', {
+        course_id: "10476777", //Hardcoded course_id
+        questions: editableQuestions
+      });
+      console.log('Quiz created:', response.data);
+      alert('Quiz created successfully!');
+    } catch (error) {
+      console.error('Error creating quiz:', error);
+      alert('There was an error creating the quiz. Please try again.');
     }
   };
 
   const formatExamQuestions = (questions) => {
-    // Si las preguntas vienen del backend Flask, usamos el formato estructurado
-    if (Array.isArray(questions)) {
-      return (
-        <div>
-          <h3>Preguntas del examen:</h3>
-          {questions.map((question, index) => (
-            <div key={index}>
-              <p><strong>Pregunta {index + 1}:</strong> {question.question_text}</p>
-              <ul>
-                {question.answers.map((answer, answerIndex) => (
-                  <li key={answerIndex} style={answer.correct ? {fontWeight: 'bold'} : {}}>
-                    {answer.answer_text} {answer.correct ? '(Correcta)' : ''}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      );
-    } else {
-      // Si las preguntas vienen directamente de OpenAI, mostramos el texto sin formato
-      return <div>{questions}</div>;
-    }
+    return (
+      <div>
+        <h3>Preguntas del examen:</h3>
+        {questions.map((question, index) => (
+          <div key={index}>
+            <input
+              type="text"
+              value={question.question_text}
+              onChange={(e) => handleQuestionEdit(index, 'question_text', e.target.value)}
+            />
+            <ul>
+              {question.answers.map((answer, answerIndex) => (
+                <li key={answerIndex}>
+                  <input
+                    type="text"
+                    value={answer.answer_text}
+                    onChange={(e) => handleAnswerEdit(index, answerIndex, 'answer_text', e.target.value)}
+                  />
+                  <input
+                    type="radio"
+                    checked={answer.correct}
+                    onChange={() => {
+                      const updatedAnswers = question.answers.map((a, i) => ({
+                        ...a,
+                        correct: i === answerIndex
+                      }));
+                      handleQuestionEdit(index, 'answers', updatedAnswers);
+                    }}
+                  />
+                  Correct
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <button onClick={handleSubmit}>Create Quiz</button>
+      </div>
+    );
   };
 
   return (
@@ -211,6 +217,8 @@ const App = () => {
         </div>
 
         <FormSection generateResponse={generateResponse} />
+
+        {editableQuestions.length > 0 && formatExamQuestions(editableQuestions)}
 
         {storedValues.length > 0 && <AnswerSection storedValues={storedValues} formatExamQuestions={formatExamQuestions} />}
       </div>
