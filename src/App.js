@@ -105,7 +105,7 @@
 //TEST//
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Configuration, OpenAIApi } from 'openai';
+// import { Configuration, OpenAIApi } from 'openai';
 import FormSection from './components/FormSection';
 import AnswerSection from './components/AnswerSection';
 import Sidebar from './components/Sidebar';
@@ -114,11 +114,11 @@ import './index.css';
 const App = () => {
   const [storedValues, setStoredValues] = useState([]);
 
-  const configuration = new Configuration({
-    apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-  });
+  // const configuration = new Configuration({
+  //   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+  // });
 
-  const openai = new OpenAIApi(configuration);
+  // const openai = new OpenAIApi(configuration);
 
   const generateResponse = async (newQuestion, setNewQuestion) => {
     console.log('Sending request with question:', newQuestion);
@@ -142,34 +142,34 @@ const App = () => {
       alert('There was an error generating the exam. Please, try again.');
 
       // Si falla, usamos OpenAI directamente como fallback
-      try {
-        const openaiResponse = await openai.createChatCompletion({
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: 'You are a helpful assistant.' },
-            { role: 'user', content: newQuestion },
-          ],
-          temperature: 0,
-          max_tokens: 400,
-          top_p: 1,
-          frequency_penalty: 0.0,
-          presence_penalty: 0.0,
-        });
+      // try {
+      //   const openaiResponse = await openai.createChatCompletion({
+      //     model: 'gpt-4o-mini',
+      //     messages: [
+      //       { role: 'system', content: 'You are a helpful assistant.' },
+      //       { role: 'user', content: newQuestion },
+      //     ],
+      //     temperature: 0,
+      //     max_tokens: 400,
+      //     top_p: 1,
+      //     frequency_penalty: 0.0,
+      //     presence_penalty: 0.0,
+      //   });
 
-        if (openaiResponse.data.choices) {
-          setStoredValues([
-            {
-              question: newQuestion,
-              answer: openaiResponse.data.choices[0].message.content,
-            },
-            ...storedValues,
-          ]);
-          setNewQuestion('');
-        }
-      } catch (openaiError) {
-        console.error('Error generating response with OpenAI:', openaiError);
-        // Manejar el error apropiadamente (e.g., mostrar un mensaje al usuario)
-      }
+      //   if (openaiResponse.data.choices) {
+      //     setStoredValues([
+      //       {
+      //         question: newQuestion,
+      //         answer: openaiResponse.data.choices[0].message.content,
+      //       },
+      //       ...storedValues,
+      //     ]);
+      //     setNewQuestion('');
+      //   }
+      // } catch (openaiError) {
+      //   console.error('Error generating response with OpenAI:', openaiError);
+      //   // Manejar el error apropiadamente (e.g., mostrar un mensaje al usuario)
+      // }
     }
   };
 
