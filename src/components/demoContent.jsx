@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const DemoContent = ({ generateResponse, question }) => {
     const [newQuestion, setNewQuestion] = useState('');
@@ -9,8 +9,8 @@ const DemoContent = ({ generateResponse, question }) => {
     };
 
     return (
-        
-            <button 
+
+            <button
                 className='btn-demo-content'
                 onClick={handleButtonClick}
             >
