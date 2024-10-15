@@ -1,73 +1,62 @@
-// import React from 'react'
+// Response in form for back//
+import React from 'react';
+import { Box, Typography, Card, CardContent, TextField, Radio, FormControlLabel, Button } from '@mui/material';
 
-// const AnswerSection = ({ storedValues, formatExamText }) => {
-//     const copyText = (text) => {
-//         navigator.clipboard.writeText(text);
-//     };
-
-//     return (
-//         <>
-//             <hr className="hr-line" />
-//             {/* <div className="answer-section">
-// 						<p className="question">{question}</p>
-// 						<p className="answer">{answer}</p>
-// 						<div className="copy-icon">
-// 							<i className="fa-solid fa-copy"></i>
-// 						</div>
-// 					</div> */}
-//             <div className="answer-container">
-//                 {storedValues.map((value, index) => {
-//                     return (
-//                         <div className="answer-section" key={index}>
-//                             <p className="question">{value.question}</p>
-//                             <p className="answer">{formatExamText(value.answer)}</p>
-//                             <div
-//                                 className="copy-icon"
-//                                 onClick={() => copyText(value.answer)}
-//                             >
-//                                 <i className="fa-solid fa-copy"></i>
-//                             </div>
-//                         </div>
-//                     );
-//                 })}
-//             </div>
-//         </>
-//     )
-// }
-
-// export default AnswerSection
-
-//TEST//
-import React from 'react'
-
-const AnswerSection = ({ storedValues, formatExamQuestions }) => {
-    const copyText = (text) => {
-        navigator.clipboard.writeText(text);
-    };
-
+const AnswerSection = ({ storedValues, editableQuestions, handleQuestionEdit, handleAnswerEdit, handleSubmit }) => {
     return (
-        <>
-            <hr className="hr-line" />
-            <div className="answer-container">
-                {storedValues.map((value, index) => {
-                    return (
-                        <div className="answer-section" key={index}>
-                            <p className="question"><strong>Prompt:</strong> {value.question}</p>
-                            <div className="answer">
-                                {formatExamQuestions(value.answer)}
-                            </div>
-                            <div
-                                className="copy-icon"
-                                onClick={() => copyText(JSON.stringify(value.answer, null, 2))}
-                            >
-                                <i className="fa-solid fa-copy"></i>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-        </>
-    )
-}
+        <Box mt={4}>
+            <Typography variant="h5" gutterBottom>Respuesta generada:</Typography>
+            <Card>
+                <CardContent>
+                    <Typography variant="body1" gutterBottom><strong>Prompt:</strong> {storedValues[0].question}</Typography>
+                    {editableQuestions.map((question, questionIndex) => (
+                        <Box key={questionIndex} mt={2}>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label={`Pregunta ${questionIndex + 1}`}
+                                value={question.question_text}
+                                onChange={(e) => handleQuestionEdit(questionIndex, 'question_text', e.target.value)}
+                                margin="normal"
+                            />
+                            {question.answers.map((answer, answerIndex) => (
+                                <Box key={answerIndex} display="flex" alignItems="center" mt={1}>
+                                    <TextField
+                                        fullWidth
+                                        variant="outlined"
+                                        label={`Respuesta ${answerIndex + 1}`}
+                                        value={answer.answer_text}
+                                        onChange={(e) => handleAnswerEdit(questionIndex, answerIndex, 'answer_text', e.target.value)}
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Radio
+                                                checked={answer.correct}
+                                                onChange={() => {
+                                                    const updatedAnswers = question.answers.map((a, i) => ({
+                                                        ...a,
+                                                        correct: i === answerIndex
+                                                    }));
+                                                    handleQuestionEdit(questionIndex, 'answers', updatedAnswers);
+                                                }}
+                                            />
+                                        }
+                                        label={answer.correct ? "Correcta" : "Incorrecta"}
+                                        labelPlacement="end"
+                                    />
+                                </Box>
+                            ))}
+                        </Box>
+                    ))}
+                    <Box mt={2}>
+                        <Button variant="contained" color="secondary" onClick={handleSubmit} fullWidth>
+                            Create Quiz
+                        </Button>
+                    </Box>
+                </CardContent>
+            </Card>
+        </Box>
+    );
+};
 
-export default AnswerSection
+export default AnswerSection;
