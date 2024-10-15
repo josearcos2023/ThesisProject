@@ -1,125 +1,49 @@
-//Version anterior de App.js:
-// import { Configuration, OpenAIApi } from 'openai';
-
-// import FormSection from './components/FormSection';
-// import AnswerSection from './components/AnswerSection';
-// import Sidebar from './components/Sidebar';
-// import { useState } from 'react';
-// import './index.css';
-
-// const App = () => {
-// 	const configuration = new Configuration({
-// 		apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-// 	});
-
-// 	const openai = new OpenAIApi(configuration);
-
-// 	const [storedValues, setStoredValues] = useState([]);
-
-// 	const generateResponse = async (newQuestion, setNewQuestion) => {
-// 		let options = {
-// 			model: 'gpt-4o-mini',
-// 			messages: [
-// 				{ role: 'system', content: 'You are a helpful assistant.' },
-// 				{ role: 'user', content: newQuestion },
-// 			],
-// 			temperature: 0,
-// 			max_tokens: 400,
-// 			top_p: 1,
-// 			frequency_penalty: 0.0,
-// 			presence_penalty: 0.0,
-// 			stop: ['/'],
-// 		};
-
-// 		// let completeOptions = {
-// 		// 	...options,
-// 		// 	prompt: newQuestion,
-// 		// };
-
-// 		// const response = await openai.createChatCompletion(completeOptions);
-// 		const response = await openai.createChatCompletion(options);
-
-// 		if (response.data.choices) {
-// 			setStoredValues([
-// 				{
-// 					question: newQuestion,
-// 					// answer: response.data.choices[0].text,
-// 					answer: response.data.choices[0].message.content,
-// 				},
-// 				...storedValues,
-// 			]);
-// 			setNewQuestion('');
-// 		}
-// 	};
-
-// 	const formatExamText = (examText) => {
-// 		const lines = examText.split('\n').filter(line => line.trim() !== '');
-// 		const formattedContent = lines.map((line, index) => {
-// 		if (line.startsWith('###')) {
-// 		// Encabezado Preguntas
-// 		return <h3 key={index}>{line.replace('###', '').trim()}</h3>;
-// 		} else if (line.startsWith('**Pregunta')) {
-// 		// Preguntas
-// 		return <p key={index}><strong>{line}</strong></p>;
-// 		} else if (line.startsWith('A)') || line.startsWith('B)') || line.startsWith('C)') || line.startsWith('D)')) {
-// 		// Opciones respuesta
-// 		return <li key={index}>{line}</li>;
-// 		} else if (line.startsWith('### Respuestas Correctas')) {
-// 		// Encabezado Respuestas
-// 		return <h3 key={index}>Respuestas Correctas:</h3>;
-// 		} else {
-// 		// TD
-// 		return <p key={index}>{line}</p>;
-// 		}
-// 		});
-
-// 		return (
-// 		<div>
-// 			{formattedContent}
-// 		</div>
-// 		);
-// 	};
-
-// 	return (
-// 		<div className="app">
-//       <Sidebar /> {/* Sidebar a la izquierda */}
-// 			<div className="main-content">
-// 				<div className="header-section">
-// 					<h1>AI Exams</h1>
-// 					{storedValues.length < 1 && (
-// 						<p>
-// 							Inserte la descripción del examen deseado
-// 						</p>
-// 					)}
-// 				</div>
-
-// 				<FormSection generateResponse={generateResponse} />
-
-// 				{storedValues.length > 0 && <AnswerSection storedValues={storedValues} formatExamText={formatExamText}/>}
-// 			</div>
-// 		</div>
-// 	);
-// };
-
-// export default App;
-
-
-//Respuesta en form para back//
-import React, { useState } from 'react';
+//Response in form for back//
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Container, Typography, Box, FormControl, InputLabel, Select, MenuItem, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import FormSection from './components/FormSection';
 import AnswerSection from './components/AnswerSection';
 import Sidebar from './components/Sidebar';
 import './index.css';
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    background: {
+      default: '#1e1e1e',
+      paper: '#2d2d2d',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: '#b0b0b0',
+    },
+  },
+});
+
 const App = () => {
   const [storedValues, setStoredValues] = useState([]);
   const [editableQuestions, setEditableQuestions] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState('');
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:5000/api/courses');
+      setCourses(response.data);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
 
   const generateResponse = async (newQuestion, setNewQuestion) => {
     console.log('Sending request with question:', newQuestion);
     try {
-      const response = await axios.post('http://127.0.0.1:5000/generate_exam', { prompt: newQuestion });
+      const response = await axios.post('http://127.0.0.1:5000/api/generate_exam', { prompt: newQuestion });
       const questions = response.data;
 
       console.log('Response received:', questions);
@@ -128,8 +52,7 @@ const App = () => {
         {
           question: newQuestion,
           answer: questions
-        },
-        ...storedValues
+        }
       ]);
       setNewQuestion('');
     } catch (error) {
@@ -151,9 +74,13 @@ const App = () => {
   };
 
   const handleSubmit = async () => {
+    if (!selectedCourse) {
+      alert('Please select a course before creating the quiz.');
+      return;
+    }
     try {
-      const response = await axios.post('http://127.0.0.1:5000/create_quiz', {
-        course_id: "10476777", //Hardcoded course_id
+      const response = await axios.post('http://127.0.0.1:5000/api/create_quiz', {
+        course_id: selectedCourse,
         questions: editableQuestions
       });
       console.log('Quiz created:', response.data);
@@ -164,65 +91,54 @@ const App = () => {
     }
   };
 
-  const formatExamQuestions = (questions) => {
-    return (
-      <div>
-        <h3>Preguntas del examen:</h3>
-        {questions.map((question, index) => (
-          <div key={index}>
-            <input
-              type="text"
-              value={question.question_text}
-              onChange={(e) => handleQuestionEdit(index, 'question_text', e.target.value)}
-            />
-            <ul>
-              {question.answers.map((answer, answerIndex) => (
-                <li key={answerIndex}>
-                  <input
-                    type="text"
-                    value={answer.answer_text}
-                    onChange={(e) => handleAnswerEdit(index, answerIndex, 'answer_text', e.target.value)}
-                  />
-                  <input
-                    type="radio"
-                    checked={answer.correct}
-                    onChange={() => {
-                      const updatedAnswers = question.answers.map((a, i) => ({
-                        ...a,
-                        correct: i === answerIndex
-                      }));
-                      handleQuestionEdit(index, 'answers', updatedAnswers);
-                    }}
-                  />
-                  Correct
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-        <button onClick={handleSubmit}>Create Quiz</button>
-      </div>
-    );
-  };
-
   return (
-    <div className="app">
-      <Sidebar />
-      <div className="main-content">
-        <div className="header-section">
-          <h1>AI Exams</h1>
-          {storedValues.length < 1 && (
-            <p>Inserte la descripción del examen deseado</p>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <div className="app">
+        <Sidebar />
+        <Container className="main-content">
+          <Box mb={4} mt={2}>
+            <Typography variant="h4" component="h1" gutterBottom>
+              AI Exams
+            </Typography>
+            <FormControl fullWidth variant="outlined">
+              <InputLabel id="course-select-label">Select Course</InputLabel>
+              <Select
+                labelId="course-select-label"
+                id="course-select"
+                value={selectedCourse}
+                label="Select Course"
+                onChange={(e) => setSelectedCourse(e.target.value)}
+              >
+                {courses.map((course) => (
+                  <MenuItem key={course.id} value={course.id}>
+                    {course.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+
+          <FormSection
+            generateResponse={generateResponse}
+            editableQuestions={editableQuestions}
+            handleQuestionEdit={handleQuestionEdit}
+            handleAnswerEdit={handleAnswerEdit}
+            handleSubmit={handleSubmit}
+          />
+
+          {storedValues.length > 0 && (
+            <AnswerSection
+              storedValues={storedValues}
+              editableQuestions={editableQuestions}
+              handleQuestionEdit={handleQuestionEdit}
+              handleAnswerEdit={handleAnswerEdit}
+              handleSubmit={handleSubmit}
+            />
           )}
-        </div>
-
-        <FormSection generateResponse={generateResponse} />
-
-        {editableQuestions.length > 0 && formatExamQuestions(editableQuestions)}
-
-        {storedValues.length > 0 && <AnswerSection storedValues={storedValues} formatExamQuestions={formatExamQuestions} />}
+        </Container>
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 
