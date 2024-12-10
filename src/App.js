@@ -146,9 +146,10 @@
 
 
 //Probando funcionalidad:
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, Typography, Box, FormControl, InputLabel, Select, MenuItem, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { Container, Typography, Box, FormControl, InputLabel, Select, MenuItem, CssBaseline, ThemeProvider, createTheme, TextField, Button } from '@mui/material';
 import FormSection from './components/FormSection';
 import AnswerSection from './components/AnswerSection';
 import Sidebar from './components/Sidebar';
@@ -176,18 +177,30 @@ const App = () => {
   const [quizTitle, setQuizTitle] = useState('');
   const [quizDescription, setQuizDescription] = useState('');
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
+  // Constantes TEST
+  const [apiKey, setApiKey] = useState('');
+  const [isApiKeySubmitted, setIsApiKeySubmitted] = useState(false);
 
-  const fetchCourses = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:5000/api/courses');
-      setCourses(response.data);
-    } catch (error) {
-      console.error('Error fetching courses:', error);
-    }
-  };
+  // useEffect(() => {
+  //   fetchCourses();
+  // }, []);
+
+  // Manejo de API Key - TEST
+  // useEffect(() => {
+  //   if (isApiKeySubmitted) {
+  //     // Courses will be fetched after API key is submitted
+  //     console.log('API Key submitted, courses loaded');
+  //   }
+  // }, [isApiKeySubmitted]);
+
+  // const fetchCourses = async () => {
+  //   try {
+  //     const response = await axios.get('http://127.0.0.1:5000/api/courses');
+  //     setCourses(response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching courses:', error);
+  //   }
+  // };
 
   const generateResponse = async (newQuestion, setNewQuestion) => {
     console.log('Sending request with question:', newQuestion);
@@ -210,6 +223,29 @@ const App = () => {
     } catch (error) {
       console.error('Error generating exam with Flask backend:', error);
       alert('There was an error generating the exam. Please try again.');
+    }
+  };
+
+  // Manejo de API Key - TEST
+  const handleApiKeySubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // First, send the API key
+      // await axios.post('http://127.0.0.1:5000/api/keys', { apikey: apiKey });
+
+      // Primer endpoint con api_key TEST
+      await axios.post('http://127.0.0.1:5000/api/keys', { api_key: apiKey });
+
+      // Then fetch courses with the API key
+      // const response = await axios.post('http://127.0.0.1:5000/api/courses', { api_key: apiKey });
+
+      // Segundo endpoint también con api_key TEST
+      const response = await axios.post('http://127.0.0.1:5000/api/courses', { api_key: apiKey });
+      setCourses(response.data);
+      setIsApiKeySubmitted(true);
+    } catch (error) {
+      console.error('Error submitting API key:', error);
+      alert('Error submitting API key. Please try again.');
     }
   };
 
@@ -255,6 +291,59 @@ const App = () => {
     }
   };
 
+  // return (
+  //   <ThemeProvider theme={darkTheme}>
+  //     <CssBaseline />
+  //     <div className="app">
+  //       <Sidebar />
+  //       <Container className="main-content">
+  //         <Box mb={4} mt={2}>
+  //           <Typography variant="h4" component="h1" gutterBottom>
+  //             AI Exams
+  //           </Typography>
+  //           <FormControl fullWidth variant="outlined">
+  //             <InputLabel id="course-select-label">Select Course</InputLabel>
+  //             <Select
+  //               labelId="course-select-label"
+  //               id="course-select"
+  //               value={selectedCourse}
+  //               label="Select Course"
+  //               onChange={(e) => setSelectedCourse(e.target.value)}
+  //             >
+  //               {courses.map((course) => (
+  //                 <MenuItem key={course.id} value={course.id}>
+  //                   {course.name}
+  //                 </MenuItem>
+  //               ))}
+  //             </Select>
+  //           </FormControl>
+  //         </Box>
+
+  //         <FormSection
+  //           generateResponse={generateResponse}
+  //           editableQuestions={editableQuestions}
+  //           handleQuestionEdit={handleQuestionEdit}
+  //           handleAnswerEdit={handleAnswerEdit}
+  //           handleSubmit={handleSubmit}
+  //         />
+
+  //         {storedValues.length > 0 && Array.isArray(editableQuestions) && editableQuestions.length > 0 && (
+  //           <AnswerSection
+  //             storedValues={storedValues}
+  //             editableQuestions={editableQuestions}
+  //             handleQuestionEdit={handleQuestionEdit}
+  //             handleAnswerEdit={handleAnswerEdit}
+  //             handleSubmit={handleSubmit}
+  //             quizTitle={quizTitle}
+  //             quizDescription={quizDescription}
+  //           />
+  //         )}
+  //       </Container>
+  //     </div>
+  //   </ThemeProvider>
+  // );
+
+  // TEST return
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
@@ -265,43 +354,72 @@ const App = () => {
             <Typography variant="h4" component="h1" gutterBottom>
               AI Exams
             </Typography>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel id="course-select-label">Select Course</InputLabel>
-              <Select
-                labelId="course-select-label"
-                id="course-select"
-                value={selectedCourse}
-                label="Select Course"
-                onChange={(e) => setSelectedCourse(e.target.value)}
-              >
-                {courses.map((course) => (
-                  <MenuItem key={course.id} value={course.id}>
-                    {course.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+
+            {/* Aquí va el nuevo código - reemplaza el FormControl existente */}
+            {!isApiKeySubmitted ? (
+              <Box mb={4}>
+                <form onSubmit={handleApiKeySubmit}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    label="Enter Canvas API Key"
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
+                    margin="normal"
+                    type="password"
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    sx={{ mt: 1 }}
+                  >
+                    Submit API Key
+                  </Button>
+                </form>
+              </Box>
+            ) : (
+              <>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel id="course-select-label">Select Course</InputLabel>
+                  <Select
+                    labelId="course-select-label"
+                    id="course-select"
+                    value={selectedCourse}
+                    label="Select Course"
+                    onChange={(e) => setSelectedCourse(e.target.value)}
+                  >
+                    {courses.map((course) => (
+                      <MenuItem key={course.id} value={course.id}>
+                        {course.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormSection
+                  generateResponse={generateResponse}
+                  editableQuestions={editableQuestions}
+                  handleQuestionEdit={handleQuestionEdit}
+                  handleAnswerEdit={handleAnswerEdit}
+                  handleSubmit={handleSubmit}
+                />
+
+                {storedValues.length > 0 && Array.isArray(editableQuestions) && editableQuestions.length > 0 && (
+                  <AnswerSection
+                    storedValues={storedValues}
+                    editableQuestions={editableQuestions}
+                    handleQuestionEdit={handleQuestionEdit}
+                    handleAnswerEdit={handleAnswerEdit}
+                    handleSubmit={handleSubmit}
+                    quizTitle={quizTitle}
+                    quizDescription={quizDescription}
+                  />
+                )}
+              </>
+            )}
           </Box>
-
-          <FormSection
-            generateResponse={generateResponse}
-            editableQuestions={editableQuestions}
-            handleQuestionEdit={handleQuestionEdit}
-            handleAnswerEdit={handleAnswerEdit}
-            handleSubmit={handleSubmit}
-          />
-
-          {storedValues.length > 0 && Array.isArray(editableQuestions) && editableQuestions.length > 0 && (
-            <AnswerSection
-              storedValues={storedValues}
-              editableQuestions={editableQuestions}
-              handleQuestionEdit={handleQuestionEdit}
-              handleAnswerEdit={handleAnswerEdit}
-              handleSubmit={handleSubmit}
-              quizTitle={quizTitle}
-              quizDescription={quizDescription}
-            />
-          )}
         </Container>
       </div>
     </ThemeProvider>
