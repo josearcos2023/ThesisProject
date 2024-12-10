@@ -214,6 +214,16 @@ const App = () => {
   };
 
   const handleQuestionEdit = (index, field, value) => {
+    if (index === -1) {
+      // Manejo especial para título y descripción
+      if (field === 'title') {
+        setQuizTitle(value);
+      } else if (field === 'description') {
+        setQuizDescription(value);
+      }
+      return;
+    }
+    // Manejo existente para preguntas
     const updatedQuestions = [...editableQuestions];
     updatedQuestions[index][field] = value;
     setEditableQuestions(updatedQuestions);

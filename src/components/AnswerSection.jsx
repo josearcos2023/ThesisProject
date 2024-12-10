@@ -80,26 +80,8 @@ const AnswerSection = ({
             <Typography variant="h5" gutterBottom>Respuesta generada:</Typography>
             <Card>
                 <CardContent>
+                    {/*  Campos editables */}
                     <TextField
-                        fullWidth
-                        variant="outlined"
-                        label="Quiz Title"
-                        value={quizTitle}
-                        disabled
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        label="Quiz Description"
-                        value={quizDescription}
-                        disabled
-                        multiline
-                        rows={2}
-                        margin="normal"
-                    />
-                    {/*  Cambio test */}
-                    {/* <TextField
                         fullWidth
                         variant="outlined"
                         label="Quiz Title"
@@ -116,7 +98,7 @@ const AnswerSection = ({
                         multiline
                         rows={2}
                         margin="normal"
-                    /> */}
+                    />
                     <Typography variant="body1" gutterBottom><strong>Original Prompt:</strong> {storedValues[0].question}</Typography>
                     {editableQuestions.map((question, questionIndex) => (
                         <Box key={questionIndex} mt={2}>
