@@ -234,7 +234,7 @@ const App = () => {
       // await axios.post('http://127.0.0.1:5000/api/keys', { apikey: apiKey });
 
       // Primer endpoint con api_key TEST
-      await axios.post('http://127.0.0.1:5000/api/keys', { api_key: apiKey });
+      // await axios.post('http://127.0.0.1:5000/api/keys', { api_key: apiKey });
 
       // Then fetch courses with the API key
       // const response = await axios.post('http://127.0.0.1:5000/api/courses', { api_key: apiKey });
