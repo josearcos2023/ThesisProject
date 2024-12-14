@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Container, Typography, Box, FormControl, InputLabel, Select, MenuItem, CssBaseline, ThemeProvider, createTheme, TextField, Button } from '@mui/material';
 import FormSection from './components/FormSection';
 import AnswerSection from './components/AnswerSection';
-import Sidebar from './components/Sidebar';
+// import Sidebar from './components/Sidebar';
 import './index.css';
 
 const darkTheme = createTheme({
@@ -141,7 +141,7 @@ const App = () => {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <div className="app">
-        <Sidebar />
+        {/* <Sidebar /> */}
         <Container className="main-content">
           <Box mb={4} mt={2}>
             <Typography variant="h4" component="h1" gutterBottom>
